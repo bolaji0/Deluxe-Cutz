@@ -11,8 +11,8 @@ const BUSINESS_CONFIG = {
   whatsappVerified: false, // set true only after confirming the number
   email: '', instagram: '',
   mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Deluxe+Cutz+76+Ayangburen+Road+Ikorodu+Lagos',
-  rating: '', reviewCount: '', currency: 'â‚¦', demoMode: true,
-  openingHours: { mondayFriday: '9:00 AM â€“ 9:00 PM', saturday: '9:00 AM â€“ 9:00 PM', sunday: '9:00 AM â€“ 9:00 PM' },
+  rating: '', reviewCount: '', currency: '₦', demoMode: true,
+  openingHours: { mondayFriday: '9:00 AM – 9:00 PM', saturday: '9:00 AM – 9:00 PM', sunday: '9:00 AM – 9:00 PM' },
   structuredHours: { 0:[9,21],1:[9,21],2:[9,21],3:[9,21],4:[9,21],5:[9,21],6:[9,21] },
   colours: { background:'#0B0B0C',surface:'#141416',text:'#F5F1E8',muted:'#AAA59C',accent:'#C89B5B',accentLight:'#E7C991' }
 };
@@ -27,22 +27,23 @@ const SERVICES = [
   {name:'Home / VIP service',description:'A private service request, subject to location and availability.',duration:'By request',price:null,demo:true}
 ];
 // REPLACE with confirmed barber profile(s).
-const BARBERS = [{name:'Your lead barber',role:'Precision cuts Â· fades Â· beard work',bio:'A proper appointment is more than taking length off. It is a conversation, a careful process and a finish you can confidently wear.',image:'assets/lead-barber.webp',demo:true}];
+const BARBERS = [{name:'Your lead barber',role:'Precision cuts · fades · beard work',bio:'A proper appointment is more than taking length off. It is a conversation, a careful process and a finish you can confidently wear.',image:'assets/lead-barber.webp',demo:true}];
 // REPLACE local image files with real shop work.
 const GALLERY = [
-  {src:'assets/cut-01.webp',category:'Fades',title:'Low fade Â· textured top'},
-  {src:'assets/cut-02.webp',category:'Beards',title:'Structured beard finish'},
-  {src:'assets/cut-03.webp',category:'Classics',title:'Clean classic taper'},
-  {src:'assets/cut-04.webp',category:'Transformations',title:'Full shape reset'},
-  {src:'assets/cut-05.webp',category:'Fades',title:'Mid fade Â· sharp line'},
-  {src:'assets/cut-06.webp',category:'Classics',title:'Natural finish'}
+  {src:'assets/cut-01.webp',category:'Fades',title:'Fresh fade · clean rear profile'},
+  {src:'assets/cut-02.webp',category:'Beards',title:'Detailed beard grooming'},
+  {src:'assets/cut-03.webp',category:'Classics',title:'Relaxed classic trim'},
+  {src:'assets/cut-04.webp',category:'Fades',title:'Close fade · clipper detail'},
+  {src:'assets/cut-05.webp',category:'Transformations',title:'Precision line-up in progress'},
+  {src:'assets/cut-06.webp',category:'Classics',title:'Textured finish · final detailing'}
 ];
+// Add only verified client reviews here. Empty by design.
 const REVIEWS = [];
 const TIMES = ['9:00 AM','10:30 AM','12:00 PM','1:30 PM','3:00 PM','4:30 PM','6:00 PM','7:30 PM'];
 
 const $=(s,c=document)=>c.querySelector(s), $$=(s,c=document)=>[...c.querySelectorAll(s)];
 const escapeHTML=value=>String(value).replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
-const formatPrice=service=>service.price?`${BUSINESS_CONFIG.currency}${service.price.toLocaleString()}${service.demo?' Â· demo':''}`:'Price on request';
+const formatPrice=service=>service.price?`${BUSINESS_CONFIG.currency}${service.price.toLocaleString()}${service.demo?' · demo':''}`:'Price on request';
 
 function applyConfig(){
   const c=BUSINESS_CONFIG,root=document.documentElement;
@@ -53,12 +54,12 @@ function applyConfig(){
   ['directionsLink','mapLink'].forEach(id=>{const el=$('#'+id);el.href=c.mapsUrl;el.target='_blank';el.rel='noopener'});
   if(c.instagram){const el=$('#instagramLink');el.href=c.instagram;el.hidden=false;el.target='_blank';el.rel='noopener'}
   $('#demoBanner').hidden=!c.demoMode; $('#demoNote').hidden=!c.demoMode;
-  if(c.rating&&c.reviewCount){$('#ratingMeta').hidden=false;$('#ratingText').textContent=`${c.rating} Â· ${c.reviewCount} reviews`}
+  if(c.rating&&c.reviewCount){$('#ratingMeta').hidden=false;$('#ratingText').textContent=`${c.rating} · ${c.reviewCount} reviews`}
   $('#year').textContent=new Date().getFullYear();
 }
 
 function renderServices(){
-  $('#serviceList').innerHTML=SERVICES.map((s,i)=>`<article class="service-item reveal"><span class="service-number">${String(i+1).padStart(2,'0')}</span><h3>${escapeHTML(s.name)}</h3><p class="service-description">${escapeHTML(s.description)}</p><div class="service-meta"><b>${escapeHTML(formatPrice(s))}</b><small>${escapeHTML(s.duration)}</small></div><button class="service-book" data-open-booking data-service="${escapeHTML(s.name)}" aria-label="Book ${escapeHTML(s.name)}">â†—</button></article>`).join('');
+  $('#serviceList').innerHTML=SERVICES.map((s,i)=>`<article class="service-item reveal"><span class="service-number">${String(i+1).padStart(2,'0')}</span><h3>${escapeHTML(s.name)}</h3><p class="service-description">${escapeHTML(s.description)}</p><div class="service-meta"><b>${escapeHTML(formatPrice(s))}</b><small>${escapeHTML(s.duration)}</small></div><button class="service-book" data-open-booking data-service="${escapeHTML(s.name)}" aria-label="Book ${escapeHTML(s.name)}">↗</button></article>`).join('');
   $('#bookingServices').innerHTML=SERVICES.map((s,i)=>`<div class="choice"><input type="radio" id="service${i}" name="service" value="${escapeHTML(s.name)}" required><label for="service${i}"><span>${escapeHTML(s.name)}</span><small>${escapeHTML(formatPrice(s))}</small></label></div>`).join('');
 }
 function renderBookingChoices(){
@@ -73,7 +74,7 @@ function renderGallery(){
   $('#galleryFilters').addEventListener('click',e=>{const b=e.target.closest('[data-filter]');if(!b)return;$$('.filter-button').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',x===b)});$$('.gallery-item').forEach(x=>x.classList.toggle('is-hidden',b.dataset.filter!=='All'&&x.dataset.category!==b.dataset.filter))});
 }
 function renderHours(){
-  const h=BUSINESS_CONFIG.openingHours;$('#hoursList').innerHTML=`<div class="hours-row"><span>Mondayâ€“Friday</span><b>${h.mondayFriday}</b></div><div class="hours-row"><span>Saturday</span><b>${h.saturday}</b></div><div class="hours-row"><span>Sunday</span><b>${h.sunday}</b></div>`;
+  const h=BUSINESS_CONFIG.openingHours;$('#hoursList').innerHTML=`<div class="hours-row"><span>Monday–Friday</span><b>${h.mondayFriday}</b></div><div class="hours-row"><span>Saturday</span><b>${h.saturday}</b></div><div class="hours-row"><span>Sunday</span><b>${h.sunday}</b></div>`;
 }
 function updateOpenStatus(){
   const now=new Date(),range=BUSINESS_CONFIG.structuredHours[now.getDay()],hour=now.getHours()+now.getMinutes()/60,open=range&&hour>=range[0]&&hour<range[1];
@@ -103,9 +104,9 @@ function showStep(){
 }
 function stepValid(){const step=$(`.booking-step[data-step="${currentStep}"]`),required=$$('[required]',step),valid=required.every(x=>x.type==='radio'?$$(`[name="${x.name}"]`,step).some(y=>y.checked):x.checkValidity());if(!valid){$('#formError').textContent='Please complete this step before continuing.';const first=required.find(x=>x.type==='radio'?!$$(`[name="${x.name}"]`,step).some(y=>y.checked):!x.checkValidity());first?.focus()}return valid}
 function bookingData(){return Object.fromEntries(new FormData($('#bookingForm')).entries())}
-function renderSummary(){const d=bookingData(),date=d.date?new Date(`${d.date}T12:00:00`).toLocaleDateString('en-NG',{weekday:'short',day:'numeric',month:'long',year:'numeric'}):'';$('#bookingSummary').innerHTML=[['Name',d.name],['Service',d.service],['Barber',d.barber],['Date',date],['Time',d.time],d.note?['Note',d.note]:null].filter(Boolean).map(x=>`<div class="summary-row"><span>${x[0]}</span><b>${escapeHTML(x[1]||'â€”')}</b></div>`).join('')}
+function renderSummary(){const d=bookingData(),date=d.date?new Date(`${d.date}T12:00:00`).toLocaleDateString('en-NG',{weekday:'short',day:'numeric',month:'long',year:'numeric'}):'';$('#bookingSummary').innerHTML=[['Name',d.name],['Service',d.service],['Barber',d.barber],['Date',date],['Time',d.time],d.note?['Note',d.note]:null].filter(Boolean).map(x=>`<div class="summary-row"><span>${x[0]}</span><b>${escapeHTML(x[1]||'—')}</b></div>`).join('')}
 function submitBooking(){
-  const d=bookingData();if(BUSINESS_CONFIG.demoMode||!BUSINESS_CONFIG.whatsappVerified){showToast('Demo complete â€” add and verify the WhatsApp number to enable sending.');return}
+  const d=bookingData();if(BUSINESS_CONFIG.demoMode||!BUSINESS_CONFIG.whatsappVerified){showToast('Demo complete — add and verify the WhatsApp number to enable sending.');return}
   const date=new Date(`${d.date}T12:00:00`).toLocaleDateString('en-NG',{weekday:'long',day:'numeric',month:'long',year:'numeric'});const note=d.note?` Note: ${d.note}`:'';const msg=`Hello ${BUSINESS_CONFIG.businessName}, my name is ${d.name}. I would like to request a ${d.service} appointment with ${d.barber} on ${date} at ${d.time}.${note} Please confirm availability. Source: website.`;const number=BUSINESS_CONFIG.phoneInternational.replace(/\D/g,'');open(`https://wa.me/${number}?text=${encodeURIComponent(msg)}`,'_blank','noopener');closeBooking();
 }
 function setupBooking(){
